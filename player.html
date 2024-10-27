@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player</title>
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for Play Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts for Modern Title Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Pulsing animation for the play button */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+        }
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        /* Font styling for the title */
+       
+
+        .title {
+    position: absolute;
+    top: calc(50% + 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    z-index: 1;
+    text-align: center;
+    text-shadow: 2px 2px 4px #000, -2px -2px 4px #000;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+    </style>
+</head>
+<body class="bg-black flex items-center justify-center h-screen">
+
+    <!-- Cover with Play Button Overlay -->
+    <div id="cover-container" class="absolute inset-0 flex items-center justify-center z-10">
+        <img id="cover-image" src="" alt="Cover Image" class="w-full h-full object-cover">
+        <div id="cover-overlay" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 cursor-pointer">
+            <div class="flex flex-col items-center text-white">
+                <!-- Updated Play Button Icon -->
+                <div id="play-button" class="pulse">
+                    <i class="fa-solid fa-play" alt="Play Icon" style="color: rgb(255, 255, 255); font-size: 2.5rem;"></i>
+                </div>
+                <!-- Movie/Show Title -->
+                <div id="title" class="title text-white text-2xl mt-4 text-center"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dropdown Toggle Button for Server Selection -->
+    <div class="absolute top-4 left-4 z-20">
+        <button id="server-toggle" class="p-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+        </button>
+        <div id="server-dropdown" class="hidden absolute top-12 left-0 w-40 bg-gray-800 text-white rounded-md shadow-lg">
+            <ul>
+                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server1">
+                    <img src="https://flagcdn.com/us.svg" alt="US" class="inline w-5 mr-2"> Stable
+                </li>
+                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server2">
+                    <img src="https://flagcdn.com/us.svg" alt="us" class="inline w-5 mr-2"> Vidcloud
+                </li>
+                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server3">
+                    <img src="https://flagcdn.com/gb.svg" alt="gb" class="inline w-5 mr-2"> Speedy
+                </li>
+                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server4">
+                    <img src="https://flagcdn.com/au.svg" alt="au" class="inline w-5 mr-2"> Multi
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fullscreen Video Iframe -->
+    <iframe id="video-frame" class="w-full h-full border-none" allowfullscreen></iframe>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const tmdbId = urlParams.get('id');
+        const season = urlParams.get('season');
+        const episode = urlParams.get('episode');
+
+        const TMDB_API_KEY = 'd56aca5c010e2b611bebd88a47cee2fd';
+        const servers = {
+            server1: { movie: id => `https://moviesapi.club/movie/${id}`, tv: (id, season, episode) => `https://moviesapi.club/tv/${id}-${season}-${episode}` },
+            server2: { movie: id => `https://vidbinge.dev/embed/movie/${id}`, tv: (id, season, episode) => `https://vidbinge.dev/embed/tv/${id}/${season}/${episode}` },
+            server3: { movie: id => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` },
+            server4: { movie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, tv: (id, season, episode) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` }
+        };
+
+        const coverContainer = document.getElementById('cover-container');
+        const coverImage = document.getElementById('cover-image');
+        const titleElement = document.getElementById('title');
+        const videoFrame = document.getElementById('video-frame');
+
+        async function loadCoverImage() {
+            const isTV = season && episode;
+            const url = isTV 
+                ? `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`
+                : `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                coverImage.src = `https://image.tmdb.org/t/p/original${data.backdrop_path}`;
+                titleElement.innerText = data.title || data.name;
+            } catch (error) {
+                console.error('Error loading cover image:', error);
+            }
+        }
+
+        function updateIframeSource(selectedServer) {
+            const isTV = season && episode;
+            const iframeUrl = isTV 
+                ? servers[selectedServer].tv(tmdbId, season, episode)
+                : servers[selectedServer].movie(tmdbId);
+            videoFrame.src = iframeUrl;
+        }
+
+        const serverToggle = document.getElementById('server-toggle');
+        const serverDropdown = document.getElementById('server-dropdown');
+
+        serverToggle.addEventListener('click', () => {
+            serverDropdown.classList.toggle('hidden');
+        });
+
+        serverDropdown.addEventListener('click', (e) => {
+            if (e.target.closest('li')) {
+                const selectedServer = e.target.closest('li').getAttribute('data-server');
+                updateIframeSource(selectedServer);
+                serverDropdown.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('play-button').addEventListener('click', () => {
+            coverContainer.classList.add('hidden');
+            updateIframeSource('server1');
+        });
+
+        loadCoverImage();
+    </script>
+</body>
+</html>
