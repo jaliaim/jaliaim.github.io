@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player</title>
+    <title>DeluxAPI</title>
     
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
     <!-- Font Awesome for Play Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap Icons for Server Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 
     <!-- Google Fonts for Modern Title Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -29,25 +32,53 @@
         .pulse {
             animation: pulse 1.5s infinite;
         }
-        /* Font styling for the title */
-       
-
+        
+        /* Title Styling */
         .title {
-    position: absolute;
-    top: calc(50% + 40px);
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 20px;
-    font-family: 'Roboto', sans-serif;
-    z-index: 1;
-    text-align: center;
-    text-shadow: 2px 2px 4px #000, -2px -2px 4px #000;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90%;
-}
+            position: absolute;
+            top: calc(50% + 40px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-family: 'Roboto', sans-serif;
+            z-index: 1;
+            text-align: center;
+            text-shadow: 2px 2px 4px #000, -2px -2px 4px #000;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90%;
+        }
+
+        /* Branding Text Styling */
+        .branding {
+            position: absolute;
+            top: calc(50% + 80px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            z-index: 1;
+            text-align: center;
+            text-shadow: 1px 1px 3px #000;
+            color: #f0f0f0;
+            opacity: 0.8;
+        }
+
+        /* Dropdown and Server Button Styling */
+        #server-toggle {
+            background: none;
+            padding: 0;
+            margin: 0;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        #server-dropdown {
+            background-color: #444; /* Gray background */
+            color: white; /* White font color */
+        }
     </style>
 </head>
 <body class="bg-black flex items-center justify-center h-screen">
@@ -63,18 +94,18 @@
                 </div>
                 <!-- Movie/Show Title -->
                 <div id="title" class="title text-white text-2xl mt-4 text-center"></div>
+                <!-- Branding Text -->
+                <div class="branding">DeluxHD.xyz</div>
             </div>
         </div>
     </div>
 
     <!-- Dropdown Toggle Button for Server Selection -->
     <div class="absolute top-4 left-4 z-20">
-        <button id="server-toggle" class="p-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-            </svg>
+        <button id="server-toggle" class="focus:outline-none">
+            <i class="bi bi-hdd-stack dropdown-icon"></i>
         </button>
-        <div id="server-dropdown" class="hidden absolute top-12 left-0 w-40 bg-gray-800 text-white rounded-md shadow-lg">
+        <div id="server-dropdown" class="hidden absolute top-12 left-0 w-40 rounded-md shadow-lg">
             <ul>
                 <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server1">
                     <img src="https://flagcdn.com/us.svg" alt="US" class="inline w-5 mr-2"> Stable
@@ -162,3 +193,4 @@
     </script>
 </body>
 </html>
+
