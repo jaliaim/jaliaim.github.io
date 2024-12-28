@@ -108,16 +108,19 @@
         <div id="server-dropdown" class="hidden absolute top-12 left-0 w-40 rounded-md shadow-lg">
             <ul>
                 <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server1">
-                    <img src="https://flagcdn.com/us.svg" alt="US" class="inline w-5 mr-2"> Stable
+                    <img src="https://flagsapi.com/US/flat/24.png" alt="US" class="inline w-5 mr-2"> Disney
+                </li>
+                  <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server3">
+                    <img src="https://flagsapi.com/GB/flat/24.png" alt="gb" class="inline w-5 mr-2"> Netflix
                 </li>
                 <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server2">
-                    <img src="https://flagcdn.com/us.svg" alt="us" class="inline w-5 mr-2"> Vidcloud [DOWN]
+                    <img src="https://flagsapi.com/US/flat/24.png" alt="us" class="inline w-5 mr-2"> Hulu
                 </li>
                 <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server3">
-                    <img src="https://flagcdn.com/gb.svg" alt="gb" class="inline w-5 mr-2"> Speedy
+                    <img src="https://flagsapi.com/GB/flat/24.png" alt="gb" class="inline w-5 mr-2"> Amazon
                 </li>
                 <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server4">
-                    <img src="https://flagcdn.com/au.svg" alt="au" class="inline w-5 mr-2"> Multi
+                    <img src="https://flagsapi.com/AU/flat/24.png" alt="au" class="inline w-5 mr-2"> ESPN
                 </li>
             </ul>
         </div>
@@ -137,7 +140,9 @@
             server1: { movie: id => `https://moviesapi.club/movie/${id}`, tv: (id, season, episode) => `https://moviesapi.club/tv/${id}-${season}-${episode}` },
             server2: { movie: id => `https://vidbinge.dev/embed/movie/${id}`, tv: (id, season, episode) => `https://vidbinge.dev/embed/tv/${id}/${season}/${episode}` },
             server3: { movie: id => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` },
-            server4: { movie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, tv: (id, season, episode) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` }
+            server4: { movie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, tv: (id, season, episode) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` },
+            server5: { movie: id => `https://111movies.com/movie/${id}`, tv: (id, season, episode) => `https://111movies.com/tv/${id}/${season}/${episode}` }
+
         };
 
         const coverContainer = document.getElementById('cover-container');
