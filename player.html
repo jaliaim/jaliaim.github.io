@@ -1,331 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeluxAPI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lordflix API</title>
+  
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- Font Awesome for Play Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- Bootstrap Icons for Server Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
+
+  <!-- Google Fonts for Modern Title Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* Pulsing animation for the play button */
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+      }
+    }
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
     
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    /* Title Styling */
+    .title {
+      position: absolute;
+      top: calc(50% + 40px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      font-family: 'Roboto', sans-serif;
+      z-index: 1;
+      text-align: center;
+      text-shadow: 2px 2px 4px #000, -2px -2px 4px #000;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90%;
+    }
 
-    <!-- Font Awesome for Play Icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    /* Branding Text Styling */
+    .branding {
+      position: absolute;
+      top: calc(50% + 80px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      font-family: 'Roboto', sans-serif;
+      z-index: 1;
+      text-align: center;
+      text-shadow: 1px 1px 3px #000;
+      color: #f0f0f0;
+      opacity: 0.8;
+    }
 
-    <!-- Bootstrap Icons for Server Icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    /* --- Updated Server Selector Styles --- */
 
-    <!-- Google Fonts for Modern Title Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    
-    <style>
-        /* Pulsing animation for the play button */
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.7;
-            }
-        }
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        /* Title Styling */
-        .title {
-            position: absolute;
-            top: calc(50% + 40px);
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 20px;
-            font-family: 'Roboto', sans-serif;
-            z-index: 1;
-            text-align: center;
-            text-shadow: 2px 2px 4px #000, -2px -2px 4px #000;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 90%;
-        }
+    /* Server Toggle Button */
+    #server-toggle {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      border-radius: 50%;
+      padding: 0.5rem;
+    }
 
-        /* Branding Text Styling */
-        .branding {
-            position: absolute;
-            top: calc(50% + 80px);
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 14px;
-            font-family: 'Roboto', sans-serif;
-            z-index: 1;
-            text-align: center;
-            text-shadow: 1px 1px 3px #000;
-            color: #f0f0f0;
-            opacity: 0.8;
-        }
+    /* Server Dropdown Container */
+    #server-dropdown {
+      backdrop-filter: blur(15px);
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border-radius: 0.5rem;
+      font-family: 'Roboto', sans-serif;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    #server-dropdown ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    #server-dropdown li {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #server-dropdown li:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
 
-        /* Dropdown and Server Button Styling */
-        #server-toggle {
-            background: none;
-            padding: 0;
-            margin: 0;
-            color: white;
-            font-size: 1.5rem;
-        }
+    /* --- ADDED START: Season/Episode Dropdown Styles --- */
+    #season-episode-toggle {
+      background: none;
+      margin-left: 10px;
+      color: white;
+      font-size: 1.5rem;
+    }
 
-        #server-dropdown {
-            background-color: #444; /* Gray background */
-            color: white; /* White font color */
-        }
+    #season-episode-dropdown {
+      /* Acrylic-like backdrop */
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      position: absolute;
+      top: 48px; /* Just below the icon */
+      left: 60px; /* Adjust so it doesn't overlap server dropdown */
+      width: 8rem; 
+      max-height: 200px;
+      overflow-y: auto;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      z-index: 30;
+    }
 
-        /* --- ADDED START: Season/Episode Dropdown Styles --- */
-        #season-episode-toggle {
-            background: none;
-            margin-left: 10px;
-            color: white;
-            font-size: 1.5rem;
-        }
+    /* Custom small scrollbar */
+    #season-episode-dropdown::-webkit-scrollbar {
+      width: 6px;
+    }
+    #season-episode-dropdown::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 3px;
+    }
+    #season-episode-dropdown::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255,0.4);
+      border-radius: 3px;
+    }
 
-        #season-episode-dropdown {
-            /* Acrylic-like backdrop */
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            position: absolute;
-            top: 48px; /* Just below the icon */
-            left: 60px; /* Adjust so it doesn't overlap server dropdown */
-            width: 8rem; 
-            max-height: 200px;
-            overflow-y: auto;
-            border-radius: 0.5rem;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            z-index: 30;
-        }
+    #season-episode-dropdown.hidden {
+      display: none;
+    }
 
-        /* Custom small scrollbar */
-        #season-episode-dropdown::-webkit-scrollbar {
-            width: 6px;
-        }
-        #season-episode-dropdown::-webkit-scrollbar-track {
-            background: transparent;
-            border-radius: 3px;
-        }
-        #season-episode-dropdown::-webkit-scrollbar-thumb {
-            background-color: rgba(255,255,255,0.4);
-            border-radius: 3px;
-        }
+    .season-episode-item {
+      padding: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .season-episode-item:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+    /* --- ADDED END --- */
 
-        #season-episode-dropdown.hidden {
-            display: none;
-        }
-
-        .season-episode-item {
-            padding: 0.5rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .season-episode-item:hover {
-            background-color: rgba(255,255,255,0.2);
-        }
-        /* --- ADDED END --- */
-    </style>
+    /* Watermark styling */
+    .watermark {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 40;
+      opacity: 0.4;
+    }
+  </style>
 </head>
 <body class="bg-black flex items-center justify-center h-screen">
 
-    <!-- Cover with Play Button Overlay -->
-    <div id="cover-container" class="absolute inset-0 flex items-center justify-center z-10">
-        <img id="cover-image" src="" alt="Cover Image" class="w-full h-full object-cover">
-        <div id="cover-overlay" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 cursor-pointer">
-            <div class="flex flex-col items-center text-white">
-                <!-- Updated Play Button Icon -->
-                <div id="play-button" class="pulse">
-                    <i class="fa-solid fa-play" alt="Play Icon" style="color: rgb(255, 255, 255); font-size: 2.5rem;"></i>
-                </div>
-                <!-- Movie/Show Title -->
-                <div id="title" class="title text-white text-2xl mt-4 text-center"></div>
-                <!-- Branding Text -->
-                <div class="branding">larp.pw</div>
-            </div>
-        </div>
+  <!-- Watermark Logo -->
+  <div class="watermark">
+    <img src="https://lordflix.cc/mor.png" alt="Logo Watermark" style="width: 100px; height: auto;" />
+  </div>
+
+  <!-- Cover with Play Button Overlay -->
+
+
+  <!-- Dropdown Toggle Button for Server Selection -->
+  <div class="absolute top-4 left-4 z-20">
+    <button id="server-toggle" class="focus:outline-none">
+      <i class="bi bi-hdd-stack dropdown-icon"></i>
+    </button>
+    <div id="server-dropdown" class="hidden absolute top-12 left-0 w-40 rounded-md shadow-lg">
+      <ul>
+        <li class="hover:bg-gray-700" data-server="server2">
+          <img src="https://static.vecteezy.com/system/resources/previews/019/956/195/non_2x/netflix-transparent-netflix-free-free-png.png" alt="US" class="inline w-5 mr-2" /> Netflix
+        </li>
+        <li class="hover:bg-gray-700" data-server="server5">
+          <img src="https://flagsapi.com/GB/flat/24.png" alt="GB" class="inline w-5 mr-2" /> Netflix
+        </li>
+        <li class="hover:bg-gray-700" data-server="server4">
+          <img src="https://flagsapi.com/US/flat/24.png" alt="US" class="inline w-5 mr-2" /> Hulu
+        </li>
+        <li class="hover:bg-gray-700" data-server="server1">
+          <img src="https://flagsapi.com/GB/flat/24.png" alt="GB" class="inline w-5 mr-2" /> Amazon
+        </li>
+        <li class="hover:bg-gray-700" data-server="server3">
+          <img src="https://flagsapi.com/AU/flat/24.png" alt="AU" class="inline w-5 mr-2" /> ESPN
+        </li>
+      </ul>
     </div>
+  </div>
 
-    <!-- Dropdown Toggle Button for Server Selection -->
-    <div class="absolute top-4 left-4 z-20">
-        <button id="server-toggle" class="focus:outline-none">
-            <i class="bi bi-hdd-stack dropdown-icon"></i>
-        </button>
-        <div id="server-dropdown" class="hidden absolute top-12 left-0 w-40 rounded-md shadow-lg">
-            <ul>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server1">
-                    <img src="https://flagsapi.com/US/flat/24.png" alt="US" class="inline w-5 mr-2"> Disney
-                </li>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server5">
-                    <img src="https://flagsapi.com/GB/flat/24.png" alt="gb" class="inline w-5 mr-2"> Netflix
-                </li>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server2">
-                    <img src="https://flagsapi.com/US/flat/24.png" alt="us" class="inline w-5 mr-2"> Hulu
-                </li>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server3">
-                    <img src="https://flagsapi.com/GB/flat/24.png" alt="gb" class="inline w-5 mr-2"> Amazon
-                </li>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer" data-server="server4">
-                    <img src="https://flagsapi.com/AU/flat/24.png" alt="au" class="inline w-5 mr-2"> ESPN
-                </li>
-            </ul>
-        </div>
-    </div>
+  <!-- ADDED START: Season/Episode Dropdown Button + Dropdown (appears only if TV) -->
 
-    <!-- ADDED START: Season/Episode Dropdown Button + Dropdown (appears only if TV) -->
-    <div class="absolute top-4 left-12 z-20">
-        <button id="season-episode-toggle" class="hidden focus:outline-none">
-            <i class="bi bi-collection-play"></i>
-        </button>
-        <div id="season-episode-dropdown" class="hidden">
-            <!-- Items dynamically added here -->
-        </div>
-    </div>
-    <!-- ADDED END -->
+  <!-- ADDED END -->
 
-    <!-- Fullscreen Video Iframe -->
-    <iframe id="video-frame" class="w-full h-full border-none" allowfullscreen></iframe>
+  <!-- Fullscreen Video Iframe -->
+  <iframe id="video-frame" class="w-full h-full border-none" allowfullscreen></iframe>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const tmdbId = urlParams.get('id');
-        const season = urlParams.get('season');
-        const episode = urlParams.get('episode');
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const tmdbId = urlParams.get('id');
+    const season = urlParams.get('season');
+    const episode = urlParams.get('episode');
 
-        const TMDB_API_KEY = '578ec210f217f7f1d02a495dcbda07e4';
-        const servers = {
-            server1: { movie: id => `https://moviesapi.club/movie/${id}`, tv: (id, season, episode) => `https://moviesapi.club/tv/${id}-${season}-${episode}` },
-            server2: { movie: id => `https://vidbinge.dev/embed/movie/${id}`, tv: (id, season, episode) => `https://vidbinge.dev/embed/tv/${id}/${season}/${episode}` },
-            server3: { movie: id => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` },
-            server4: { movie: id => `https://vidlink.pro/movie/${id}?primaryColor=a359ec&secondaryColor=a2a2a2&iconColor=&icons=default&player=default&title=true&poster=true&autoplay=false&nextbutton=false`, tv: (id, season, episode) => `https://vidlink.pro/tv/${id}/${season}/${episode}?primaryColor=a359ec&secondaryColor=a2a2a2&iconColor=&icons=default&player=default&title=true&poster=true&autoplay=false&nextbutton=false` },
-            server5: { movie: id => `https://111movies.com/movie/${id}`, tv: (id, season, episode) => `https://111movies.com/tv/${id}/${season}/${episode}` }
-        };
+    const TMDB_API_KEY = '578ec210f217f7f1d02a495dcbda07e4';
+    const servers = {
+      server1: {
+        movie: id => `https://moviesapi.club/movie/${id}`,
+        tv: (id, season, episode) => `https://moviesapi.club/tv/${id}-${season}-${episode}`
+      },
+      server2: {
+        movie: id => `https://player.videasy.net/movie/${id}?color=a359ec`,
+        tv: (id, season, episode) => `https://player.videasy.net/tv/${id}/1/1?color=dc2626`
+      },
+      server3: {
+        movie: id => `https://vidsrc.cc/v2/embed/movie/${id}`,
+        tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}`
+      },
+      server4: {
+        movie: id => `https://vidlink.pro/movie/${id}?primaryColor=a359ec&secondaryColor=a2a2a2&iconColor=&icons=default&player=default&title=true&poster=true&autoplay=false&nextbutton=false`,
+        tv: (id, season, episode) => `https://vidlink.pro/tv/${id}/${season}/${episode}?primaryColor=a359ec&secondaryColor=a2a2a2&iconColor=&icons=default&player=default&title=true&poster=true&autoplay=false&nextbutton=false`
+      },
+      server5: {
+        movie: id => `https://111movies.com/movie/${id}`,
+        tv: (id, season, episode) => `https://111movies.com/tv/${id}/${season}/${episode}`
+      }
+    };
 
-        const coverContainer = document.getElementById('cover-container');
-        const coverImage = document.getElementById('cover-image');
-        const titleElement = document.getElementById('title');
-        const videoFrame = document.getElementById('video-frame');
+    const coverContainer = document.getElementById('cover-container');
+    const coverImage = document.getElementById('cover-image');
+    const titleElement = document.getElementById('title');
+    const videoFrame = document.getElementById('video-frame');
 
-        async function loadCoverImage() {
-            const isTV = season && episode;
-            const url = isTV 
-                ? `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`
-                : `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`;
-            
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                coverImage.src = `https://image.tmdb.org/t/p/original${data.backdrop_path}`;
-                titleElement.innerText = data.title || data.name;
-            } catch (error) {
-                console.error('Error loading cover image:', error);
-            }
+   
+
+    function updateIframeSource(selectedServer) {
+      const isTV = season && episode;
+      const iframeUrl = isTV 
+        ? servers[selectedServer].tv(tmdbId, season, episode)
+        : servers[selectedServer].movie(tmdbId);
+      videoFrame.src = iframeUrl;
+    }
+
+    const serverToggle = document.getElementById('server-toggle');
+    const serverDropdown = document.getElementById('server-dropdown');
+
+    serverToggle.addEventListener('click', () => {
+      serverDropdown.classList.toggle('hidden');
+    });
+
+    serverDropdown.addEventListener('click', (e) => {
+      const li = e.target.closest('li');
+      if (li) {
+        const selectedServer = li.getAttribute('data-server');
+        updateIframeSource(selectedServer);
+        serverDropdown.classList.add('hidden');
+      }
+    });
+
+updateIframeSource('server2');
+
+   
+
+    /* --- ADDED START: Season/Episode Dropdown Logic --- */
+    const seasonEpisodeToggle = document.getElementById('season-episode-toggle');
+    const seasonEpisodeDropdown = document.getElementById('season-episode-dropdown');
+
+    // Show the Season/Episode button & dropdown ONLY if we have TV (season & episode)
+    if (season && episode) {
+      seasonEpisodeToggle.classList.remove('hidden');
+
+      // Toggle show/hide on click
+      seasonEpisodeToggle.addEventListener('click', () => {
+        seasonEpisodeDropdown.classList.toggle('hidden');
+      });
+
+      // Function to populate the dropdown
+      async function loadSeasonEpisodes() {
+        // If Money Heist (71446), use manual data
+        if (tmdbId === "71446") {
+          // Money Heist Manual Data
+          const manualSeasons = [
+            { season_number: 1, episode_count: 13 },
+            { season_number: 2, episode_count: 9 },
+            { season_number: 3, episode_count: 8 },
+            { season_number: 4, episode_count: 8 },
+            { season_number: 5, episode_count: 10 }
+          ];
+          populateDropdown(manualSeasons);
+        } else {
+          // Otherwise, fetch from TMDB
+          try {
+            const url = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const seasonsData = data.seasons;
+            populateDropdown(seasonsData);
+          } catch (err) {
+            console.error('Error loading season/episode data:', err);
+          }
         }
+      }
 
-        function updateIframeSource(selectedServer) {
-            const isTV = season && episode;
-            const iframeUrl = isTV 
-                ? servers[selectedServer].tv(tmdbId, season, episode)
-                : servers[selectedServer].movie(tmdbId);
-            videoFrame.src = iframeUrl;
-        }
+      // Helper to populate items in the dropdown
+      function populateDropdown(seasonsData) {
+        // Clear any existing items
+        seasonEpisodeDropdown.innerHTML = "";
 
-        const serverToggle = document.getElementById('server-toggle');
-        const serverDropdown = document.getElementById('server-dropdown');
+        // seasonsData can come from TMDB or manual
+        seasonsData.forEach(s => {
+          const seasonNum = s.season_number;
+          const episodeCount = s.episode_count;
 
-        serverToggle.addEventListener('click', () => {
-            serverDropdown.classList.toggle('hidden');
-        });
-
-        serverDropdown.addEventListener('click', (e) => {
-            if (e.target.closest('li')) {
-                const selectedServer = e.target.closest('li').getAttribute('data-server');
-                updateIframeSource(selectedServer);
-                serverDropdown.classList.add('hidden');
-            }
-        });
-
-        document.getElementById('play-button').addEventListener('click', () => {
-            coverContainer.classList.add('hidden');
-            updateIframeSource('server1');
-        });
-
-        loadCoverImage();
-
-        /* --- ADDED START: Season/Episode Dropdown Logic --- */
-        const seasonEpisodeToggle = document.getElementById('season-episode-toggle');
-        const seasonEpisodeDropdown = document.getElementById('season-episode-dropdown');
-
-        // Show the Season/Episode button & dropdown ONLY if we have TV (season & episode)
-        if (season && episode) {
-            seasonEpisodeToggle.classList.remove('hidden');
-
-            // Toggle show/hide on click
-            seasonEpisodeToggle.addEventListener('click', () => {
-                seasonEpisodeDropdown.classList.toggle('hidden');
+          // Generate SxEy for each episode
+          for (let e = 1; e <= episodeCount; e++) {
+            const li = document.createElement('div');
+            li.className = 'season-episode-item';
+            li.textContent = `S${seasonNum}E${e}`;
+            li.addEventListener('click', () => {
+              // On click, reload with new season/episode
+              window.location.href = `?id=${tmdbId}&season=${seasonNum}&episode=${e}`;
             });
+            seasonEpisodeDropdown.appendChild(li);
+          }
+        });
+      }
 
-            // Function to populate the dropdown
-            async function loadSeasonEpisodes() {
-                // If Money Heist (71446), use manual data
-                if (tmdbId === "71446") {
-                    // Money Heist Manual Data
-                    const manualSeasons = [
-                        { season_number: 1, episode_count: 13 },
-                        { season_number: 2, episode_count: 9 },
-                        { season_number: 3, episode_count: 8 },
-                        { season_number: 4, episode_count: 8 },
-                        { season_number: 5, episode_count: 10 }
-                    ];
-                    populateDropdown(manualSeasons);
-                } else {
-                    // Otherwise, fetch from TMDB
-                    try {
-                        const url = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`;
-                        const response = await fetch(url);
-                        const data = await response.json();
-                        const seasonsData = data.seasons;
-                        populateDropdown(seasonsData);
-                    } catch (err) {
-                        console.error('Error loading season/episode data:', err);
-                    }
-                }
-            }
-
-            // Helper to populate items in the dropdown
-            function populateDropdown(seasonsData) {
-                // Clear any existing items
-                seasonEpisodeDropdown.innerHTML = "";
-
-                // seasonsData can come from TMDB or manual
-                seasonsData.forEach(s => {
-                    const seasonNum = s.season_number;
-                    const episodeCount = s.episode_count;
-
-                    // Generate SxEy for each episode
-                    for (let e = 1; e <= episodeCount; e++) {
-                        const li = document.createElement('div');
-                        li.className = 'season-episode-item';
-                        li.textContent = `S${seasonNum}E${e}`;
-                        li.addEventListener('click', () => {
-                            // On click, reload with new season/episode
-                            window.location.href = `?id=${tmdbId}&season=${seasonNum}&episode=${e}`;
-                        });
-                        seasonEpisodeDropdown.appendChild(li);
-                    }
-                });
-            }
-
-            // Load them once on page load
-            loadSeasonEpisodes();
-        }
-        /* --- ADDED END --- */
-    </script>
+      // Load them once on page load
+      loadSeasonEpisodes();
+    }
+    /* --- ADDED END --- */
+  </script>
 </body>
 </html>
